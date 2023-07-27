@@ -120,15 +120,52 @@ read.csv("./csv_exam.csv")
 
 # R폴더에서 -> 상위 폴더로 이동 -> csv 하위폴더 이동 -> csv_exam.csv
 # 절대 경로
-read.csv("C:/Users/moons/Documents/GitHub/ubion-8/csv/csv_exam.csv")
+read.csv("C:/Users/moons/Desktop/ubion-8/csv/csv_exam.csv")
 # 상대 경로
-read.csv("../csv/csv_exam.csv")
+read.csv("../csv/csv_exam.csv") -> df
+
+# 데이터프레임에 상위 n개를 출력
+# head(데이터프레임명, n)
+head(df, 3)
+head(df)
+# 데이터프레임에 하위 n개를 출력
+# tail(데이터프레임명, n)
+tail(df, 3)
+tail(df)
+
+# console에서 데이터프레임 확인하는것이 아니라 표의 형태로 표시 
+# View(데이터프레임명)
+View(df)
+# 데이터프레임의 크기를 출력
+dim(df)
+# 데이터프레임의 정보를 출력
+str(df)
+# 데이터프레임의 통계요약 정보 출력
+summary(df)
+
+# 새로운 컬럼 하나 생성(파생변수 생성)
+# 수학 + 영어 + 과학 -> total_score
+# df에서 하나의 컬럼을 선택하면 해당하는 데이터의 타입은 백터
+print(df$math)
+print(df$science)
+print(df$english)
+# 백터끼리의 합은 각 원소들의 합과 같다. 
+df$math + df$science + df$english -> total_score
 
 
+# 데이터의 변화는 없다 (출력물이 존재)
+data.frame(df, total_score)
+cbind(df, total_score)
 
+# 대입 연산자를 이용하여 변수에 데이터를 변경해준다.(출력물이 존재하지 않는다.)
+df$total_score = total_score
 
-
-
+# 평균 점수(mean_score) 컬럼을 추가 
+# total_score / 3 -> mean_score
+df$total_score / 3
+# 반올림 round()
+round(df$total_score / 3, 2) -> df$mean_score
+df
 
 
 
