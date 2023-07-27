@@ -167,5 +167,28 @@ df$total_score / 3
 round(df$total_score / 3, 2) -> df$mean_score
 df
 
+# 평균 점수가 65점 초과이면 'pass' 65점 미만이면 'fail' 65점이면 'hold'
+# 컬럼의 이름을 result
 
+if(score > 65){
+  result = "pass"
+}else if (score == 65){
+  result = "hold"
+}else{
+  result = "fail"
+}
+
+# if문을 한줄로 작성 
+# ifelse(조건식, 참인경우 결과 값, 거짓인 경우 결과값)를 사용
+ifelse(df$mean_score > 65, 'pass', 'fail')
+
+ifelse(df$mean_score > 65, # 조건식
+        'pass', #조건식인 참인 경우 
+        ifelse(
+          df$mean_score == 65, 
+          'hold', 
+          'fail'
+        ) #조건식이 거짓인 경우
+       ) -> df$result
+df
 
