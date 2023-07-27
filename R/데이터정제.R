@@ -89,6 +89,124 @@ mpg %>%
   arrange(-mean_total) %>% 
   head(10)
 
+# join 결합
+# 특정한 조건에 맞는 경우 데이터프레임의 열을 결합하는 함수
+df_1 = data.frame(
+  id = 1:5, 
+  score = c(60, 70, 80, 90, 100)
+)
+df_2 = data.frame(
+  id = 2:6, 
+  weight = c(80, 70, 75, 60, 55)
+)
+df_1
+df_2
+
+# 교집합
+# inner_join(데이터프레임1, 데이터프레임2, by='조건')
+inner_join(df_1, df_2, by='id')
+
+# 왼쪽의 데이터프레임을 기준으로 결합
+left_join(df_1, df_2, by='id')
+
+# 오른쪽의 데이터프레임을 기준으로 결합
+right_join(df_1, df_2, by='id')
+
+# 합집합
+full_join(df_1, df_2, by='id')
+
+
+df_3 = data.frame(
+  id = 1:5, 
+  item = c(1, 2, 1, 2, 3)
+)
+df_4 = data.frame(
+  item = 1:3, 
+  price = c(100, 200, 300)
+)
+df_3
+df_4
+
+inner_join(df_3, df_4, by='item')
+left_join(df_3, df_4, by='item')
+right_join(df_3, df_4, by='item')
+full_join(df_3, df_4, by='item')
+
+# 데이터프레임의 행 결합
+df_1 = data.frame(
+  id = 1:5, 
+  score = c(70, 80, 90, 100, 70)
+)
+df_2 = data.frame(
+  id = 6:10, 
+  weight = c(80, 70, 60, 75, 65)
+)
+df_3 = data.frame(
+  id = 11:15, 
+  score = c(100, 80, 60, 50, 80)
+)
+
+#rbind()는 데이터프레임의 형태가 같은 경우에만 행을 추가해준다. 
+rbind(df_1, df_2)
+rbind(df_1, df_3)
+
+# 단순한 행 결합 
+bind_rows(df_1, df_2, df_3)
+
+midwest = ggplot2::midwest
+
+View(midwest)
+
+# 컬럼의 이름을 변경
+# rename(데이터프레임명, 변경될 컬럼명 = 변경시킬 컬럼명)
+# midwest 데이터프레임에서  popasian컬럼을 asian 변경
+# poptotal컬럼의 이름을 total 변경
+rename(midwest, asian = popasian) -> midwest
+midwest <- rename(midwest, total= poptotal)
+
+## total, asian 컬럼을 이용하여 전체 인구 대비 아시아 인구 백분율
+# (asian/total)*100
+## 파생변수(ratio) 생성
+# 내장함수 
+(midwest$asian / midwest[['total']] ) * 100 -> midwest$ratio
+# 외부 패키지
+midwest %>% 
+  mutate(ratio = (asian / total)*100 ) -> midwest
+
+## ratio 히스토그램 
+# hist(백터값)
+hist(midwest$ratio)
+
+
+## ratio의 전체 평균 값을 기준으로 평균을 초과하면 large, 이하면 small
+## 파생변수(group) 생성
+# ratio 전체 평균 값 출력
+mean(midwest$ratio) -> mean_ratio
+ifelse(midwest$ratio > mean_ratio, 'large', 'small') -> midwest$group
+
+midwest %>% 
+  mutate(group = ifelse(ratio > mean_ratio, 'large', 'small')) -> midwest
+
+## group 컬럼의 해당하는 지역의 분포의 개수를 출력 막대그래프 출력
+table(midwest$group)
+qplot(midwest$group)
+
+midwest = ggplot2::midwest
+
+## midwest 데이터프레임 정제 
+## popadults 컬럼이 해당 지역의 성인 인구수
+## poptotal 해당 지역의 총 인구 수 
+## "전체 인구수 대비 미성년자의 인구 백분율"을 ratio_child 파생변수에 대입
+## 미성년 인구 백분율이 가장 높은 지역 상위 5개를 출력
+
+## 미성년의 비율이 40% 이상이면 large
+## 30% 이상 40% 미만이면 middle
+## 30% 미만이면 small
+## grade 파생변수 생성
+## grade별 빈도수를 출력, 막대그래프 표시 
+
+
+
 
 
 
