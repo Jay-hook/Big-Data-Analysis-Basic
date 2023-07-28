@@ -191,6 +191,9 @@ midwest %>%
 table(midwest$group)
 qplot(midwest$group)
 
+library(dplyr)
+library(ggplot2)
+
 midwest = ggplot2::midwest
 
 ## midwest 데이터프레임 정제 
@@ -199,13 +202,68 @@ midwest = ggplot2::midwest
 ## "전체 인구수 대비 미성년자의 인구 백분율"을 ratio_child 파생변수에 대입
 ## 미성년 인구 백분율이 가장 높은 지역 상위 5개를 출력
 
+# 내장함수
+
+# 미성년자의 인구 수 ( 총 인구수 - 성인 인구수 )
+midwest$poptotal - midwest$popadults -> child_data
+# 전체 인구수 대비 미성년자의 인구 백분율 ( 미성년자의 인구수 / 전체 인구수 * 100 )
+child_data / midwest$poptotal * 100 -> midwest$ratio_child
+# ratio_child를 기준으로 내림차순 정렬로 변경
+order(midwest$ratio_child, decreasing = TRUE) -> flag
+midwest[flag, c("county", "ratio_child")] -> child_data
+head(child_data, 5)
+# 패키지
+midwest2 = ggplot2::midwest
+
+midwest2 %>% 
+  mutate(ratio_child = (poptotal - popadults) / poptotal * 100 ) -> midwest2 
+
+midwest2 %>%   
+  arrange(desc(ratio_child)) %>% 
+  select(county, ratio_child) %>% 
+  head(5)
+
+
+
 ## 미성년의 비율이 40% 이상이면 large
 ## 30% 이상 40% 미만이면 middle
 ## 30% 미만이면 small
 ## grade 파생변수 생성
 ## grade별 빈도수를 출력, 막대그래프 표시 
 
+# 내장함수 
+# ifelse(조건식, 참인경우 결과, 거짓인 경우 결과)
+ifelse(
+  midwest$ratio_child >= 40, 
+  "large",  
+  ifelse(
+    midwest$ratio_child >= 30, 
+    "middle", 
+    "small"
+  )
+) -> midwest$grade
 
+# 빈도수 출력
+table(midwest$grade)
+# 막대그래프 출력
+qplot(midwest$grade)
+
+# 패키지
+
+midwest2 %>% 
+  mutate(
+    grade = ifelse(
+      ratio_child >=40, 
+      "large", 
+      ifelse(
+        ratio_child >= 30, 
+        "middle", 
+        "small"
+      )
+    )
+  ) %>% 
+  group_by(grade) %>% 
+  summarise(count = n())
 
 
 
