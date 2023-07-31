@@ -138,5 +138,117 @@ age_income %>%
 
 ## 그래프의 순서를 young , middle, old 순으로 그래프의 순서를 변경
 
+# case1 
+ifelse(
+  welfare_copy$age < 30, 
+  'young', 
+  ifelse(
+    welfare_copy$age < 60, 
+    'middle', 
+    'old'
+  )
+) -> welfare_copy$ageg
+
+# case2 (dplyr 패키지 사용)
+welfare_copy %>% 
+  mutate(ageg = ifelse(
+    age < 30 , 
+    'young', 
+    ifelse(
+      age < 60, 
+      'middle', 
+      'old'
+    )
+  )) -> welfare_copy
+
+# 그룹화 
+# 월급의 결측치를 제외
+# 연령대를 기준으로 그룹화
+# 월급의 평균
+welfare_copy %>% 
+  filter(!is.na(income)) %>% 
+  group_by(ageg) %>% 
+  summarise(income_mean = mean(income)) -> ageg_income
+
+# 그래프 시각화
+ggplot(
+  data = ageg_income, 
+  aes(x = ageg, y=income_mean)
+) + geom_col()
+
+# 그래프의 순서를 커스텀하게 변경
+ggplot(
+  data = ageg_income, 
+  aes(x = ageg, y = income_mean)
+) + geom_col() + scale_x_discrete(
+  limits = c('young', 'middle', 'old')
+)
+
+# 연령대, 성별을 기준으로 그룹화 하여 평균 월급을 확인
+welfare_copy %>% 
+  filter(!is.na(income)) %>% 
+  group_by(ageg, gender) %>% 
+  summarise(income_mean = mean(income)) -> gender_income
+gender_income
+
+# 그래프 시각화
+ggplot(
+  data = gender_income, 
+  aes(x = ageg, y = income_mean, fill=gender)
+) + geom_col() + scale_x_discrete(
+  limits = c('young', 'middle', 'old')
+)
+
+ggplot(
+  data = gender_income, 
+  aes(x = ageg, y = income_mean, fill = gender)
+) + geom_col(position = 'dodge') + scale_x_discrete(
+  limits = c('young', 'middle', 'old')
+)
+install.packages("readxl")
+library(readxl)
+# 직업별로 평균 월급 어느정도인가?
+# code_job컬럼이 존재 -> 직업을 숫자로 표현
+# Koweps_Codebook.xlsx파일에 code에 맞는 직업 데이터가 존재
+# 엑셀파일을 로드 -> code와 맞는 직업을 join 결합
+list_job = read_excel("../csv/Koweps_Codebook.xlsx", 
+                      sheet = 2, 
+                      col_names = T)
+
+# 두개의 데이터프레임을 결합
+# 특정한 조건에 맞는 데이터들만 열 결합
+# 특정한 조건? -> 
+head(welfare_copy, 1)
+head(list_job, 1)
+
+welfare_copy = left_join(welfare_copy, list_job, by='code_job')
+View(welfare_copy)
+
+
+# 데이터의 결합이 잘 되었는지 확인 
+welfare_copy %>% 
+  filter(!is.na(code_job)) %>% 
+  select(code_job, job) %>% 
+  head(10)
+
+## 직업별로 평균 월급
+welfare_copy %>% 
+  filter(!is.na(job) & !is.na(income)) %>% 
+  group_by(job) %>% 
+  summarise(income_mean = mean(income)) -> job_income
+
+## 평균 월급의 top10을 출력해보시오
+
+# income_mean을 기준으로 내림차순 정렬 변경
+# 상위10개 -> head(10)
+job_income %>% 
+  arrange(desc(income_mean)) %>% 
+  head(10) -> top10
+
+# 그래프 시각화
+ggplot(
+  data = top10, 
+  aes(x = reorder(job, income_mean), y = income_mean)
+) + geom_col() + coord_flip()
 
 
