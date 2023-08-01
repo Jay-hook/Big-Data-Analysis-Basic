@@ -1,0 +1,60 @@
+데이터베이스 생성 
+CREATE DATABASE ubion8;
+
+데이터베이스 삭제
+DROP DATABASE ubion8;
+
+데이터베이스로 이동
+USE ubion8;
+
+테이블 생성
+CREATE TABLE user(
+	id varchar(16) primary key, 
+	password varchar(32) not null);
+
+테이블에 데이터 삽입
+INSERT INTO user VALUES ("test", "1234");
+INSERT INTO user(id, password) VALUES ("test2", "1111");
+
+테이블에 데이터 수정 
+UPDATE ubion8 SET password = "1122" WHERE id = "test";
+(WHERE절을 사용하지 않으면 전체 데이터의 password가 변경된다.)
+
+테이블에 데이터 삭제
+DELETE FROM user WHERE id = "test1";
+(UPDATE문과 같이 WHERE절을 사용하지 않으면 테이블 내의 데이터가 모두 삭제된다.)
+
+테이블 데이터 조회
+SELECT * FROM user;
+SELECT id, password FROM ubion;
+
+자식 테이블 생성 
+CREATE TABLE info (
+	id varchar(16), 
+	name varchar(16) not null, 
+	adr varchar(32), 
+	phone varchar(32),
+	FOREIGN KEY (id) REFERENCES user(id)
+);
+(부모 테이블은 user 자식 테이블은 info `id` 컬럼을 기준으로 2개의 테이블이 연결)
+
+JOIN 결합하여 데이터 조회
+SELECT * FROM user left join info ON = user.id = info.id;
+
+별칭 사용하기 
+SELECT 
+a.id, 
+a.password, 
+b.name, 
+b.phone
+FROM 
+user as a
+left join 
+info as b
+ON = a.id = b.id;
+
+
+
+
+
+
