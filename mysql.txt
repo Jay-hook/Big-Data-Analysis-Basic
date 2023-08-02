@@ -53,6 +53,28 @@ left join
 info as b
 ON = a.id = b.id;
 
+데이터 조회시 인덱스 조건 추가 
+SELECT * FROM emp WHERE SAL > 2000;
+
+조건식이 2개 이상인 경우 (AND, OR)
+SELECT * FROM emp WHERE SAL = 3000 OR SAL = 5000;
+SELECT * FROM emp WHERE SAL IN (3000, 5000);
+
+사잇값 데이터를 조회하는 경우 
+SELECT * FROM emp WHERE SAL >= 1000 AND SAL <= 3000;
+SELECT * FROM emp WHERE SAL BETWEEN 1000 AND 3000;
+
+사원의 이름이 s 로 시작하는 사원 정보 출력
+SELECT * FROM emp WHERE ENAME LIKE 's%';
+
+사원의 이름이 s로 끝나는 사원 정보 출력
+SELECT * FROM emp WHERE ENAME LIKE '%s';
+
+사원의 이름에 s가 포함되어 있는 사원 정보 출력 
+SELECT * FROM emp WHERE ENAME LIKE '%s%';
+
+ 
+
 
 
 
